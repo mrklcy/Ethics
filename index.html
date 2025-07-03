@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethical IT Advocacy App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;}
+    body{
+      margin:0;font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#FFF7D1,#FFDDBF);
+      color:#333;display:flex;flex-direction:column;min-height:100vh;
+    }
+    h1,h2,h3,h4{margin:0;}
+    button{cursor:pointer;transition:all .3s ease;}
+    button:hover{transform:scale(1.05);}
+    header,footer{background:#2c786c;color:#fff;text-align:center;padding:1rem;flex-shrink:0;}
+    main{flex:1;padding:2rem 1rem;width:100%;max-width:900px;margin:0 auto;}
+    .intro{text-align:center;margin-bottom:2rem;}
+    .features{display:grid;gap:1.5rem;}
+    @media(min-width:640px){.features{grid-template-columns:repeat(3,1fr);}}
+    .card{background:#fff;border-radius:14px;padding:1.5rem 1rem;box-shadow:0 4px 10px rgba(0,0,0,.1);display:flex;flex-direction:column;align-items:center;text-align:center;}
+    .card h4{color:#e67e22;margin-bottom:.5rem;}
+    .card p{flex:1;}
+    .card button{background:#2c786c;color:#fff;border:none;padding:.6rem 1.2rem;border-radius:25px;font-weight:bold;margin-top:.5rem;}
+    .card button:hover{background:#205950;}
+    .quiz-container{display:none;flex-direction:column;gap:1rem;background:#fff;padding:2rem 1.5rem;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.15);}
+    .quiz-container.active{display:flex;}
+    .quiz-q{font-weight:600;}
+    .options{display:flex;flex-direction:column;gap:.5rem;}
+    .result{font-size:1.25rem;font-weight:600;text-align:center;margin:1rem 0;}
+    .tip-banner{background:#ff914d;color:#fff;padding:.75rem 1rem;border-radius:12px;margin-top:1rem;}
+    .hidden{display:none !important;}
+    .category-select{display:flex;flex-direction:column;gap:1rem;text-align:center;margin-top:1rem;}
+    .category-select button{padding:.8rem 1.3rem;background:#ff914d;border:none;color:#fff;border-radius:20px;font-weight:bold;}
+    .category-select button:hover{background:#e57023;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ethical IT Advocacy</h1>
+    <p>Empowering Filipinos with digital, cultural & professional ethics</p>
+  </header>
+  <main>
+    <section class="intro">
+      <h2>Welcome to the Ethics App</h2>
+      <p>This app promotes moral decision‑making grounded in Filipino values, digital citizenship, and professional integrity.</p>
+    </section>
+    <!-- Feature cards -->
+    <section class="features" id="featureSection">
+      <div class="card">
+        <h4>⚖️ Ethical Principles</h4>
+        <p>Explore core Filipino values like <strong>Bayanihan</strong> & <strong>Paggalang</strong>.</p>
+        <button onclick="showPrinciples()">View Principles</button>
+      </div>
+      <div class="card">
+        <h4>🎮 Ethical Quizzes</h4>
+        <p>Choose a category to test your ethics know‑how.</p>
+        <button onclick="selectQuizCategory()">Start Quiz</button>
+      </div>
+      <div class="card">
+        <h4>💡 Daily Life Tips</h4>
+        <p>Get bite‑size tips for everyday ethical choices.</p>
+        <button onclick="getTip()">Show Tip</button>
+        <p id="dailyTip" style="margin-top:.75rem;font-weight:600;"></p>
+      </div>
+    </section>
+    <!-- Principles list -->
+    <section class="card hidden" id="principlesSection">
+      <h3>Core Filipino Ethical Principles</h3>
+      <ul style="text-align:left;line-height:1.6;">
+        <li><strong>Pakikipagkapwa‑tao</strong> – Treating others with respect and empathy.</li>
+        <li><strong>Bayanihan</strong> – Community spirit of mutual help.</li>
+        <li><strong>Utang na Loob</strong> – Gratitude & reciprocating favors.</li>
+        <li><strong>Paggalang</strong> – Showing courtesy to elders & authority.</li>
+        <li><strong>Malasakit</strong> – Genuine concern for people & environment.</li>
+        <li><strong>Hiya</strong> – Sense of modesty & social propriety.</li>
+        <li><strong>Pakikisama</strong> – Harmonious relationship with others.</li>
+      </ul>
+      <button onclick="goHome()">Back</button>
+    </section>
+    <!-- Quiz play area -->
+    <section class="quiz-container" id="quizSection">
+      <div id="quizInner"></div>
+    </section>
+    <!-- Category selection -->
+    <section class="card hidden" id="quizCategory">
+      <h3>Select Quiz Category</h3>
+      <div class="category-select">
+        <button onclick="startQuiz('filipino')">🇵🇭 Filipino Values</button>
+        <button onclick="startQuiz('digital')">💻 Digital Ethics</button>
+        <button onclick="startQuiz('professional')">👔 Professional Ethics</button>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Ethical IT Advocacy • Made for Filipino digital citizens</p>
+  </footer>
+
+<script>
+  /* ---------- Data ---------- */
+  const tips = [
+    "Always ask consent before posting someone else's photo online.",
+    "Think before you click – verify facts first!",
+    "Greet elders with 'po' and 'opo' today.",
+    "Volunteer in your barangay clean‑up drive.",
+    "Integrity first: log your work hours honestly.",
+    "Refuse gifts that compromise objectivity.",
+  ];
+
+  const advocacyTips = {
+    filipino:[
+      "Live out <strong>bayanihan</strong> by helping a neighbor today!",
+      "Practice <strong>pakikipagkapwa‑tao</strong>: smile and listen actively.",
+      "Show <strong>paggalang</strong>: let elders go first in line.",
+    ],
+    digital:[
+      "Be a digital hero: report misinformation you see online.",
+      "Respect consent: ask friends before tagging them in photos.",
+      "Keep your accounts safe: update your passwords this week!",
+    ],
+    professional:[
+      "Lead by example: turn down conflicts of interest.",
+      "Document honestly – transparency builds trust.",
+      "Stand up for coworkers facing harassment: it's everyone's duty.",
+    ]
+  };
+
+  const quizzes = {
+    filipino:[
+      {q:"Which Filipino value emphasizes community cooperation and helping one another?",options:["Hiya","Bayanihan","Utang na Loob","Paggalang"],answer:1},
+      {q:"Respect for elders is most associated with which value?",options:["Paggalang","Pakikisama","Hiya","Malasakit"],answer:0},
+      {q:"Expressing gratitude and reciprocating favors refers to ____.",options:["Utang na Loob","Bayanihan","Pakikipagkapwa‑tao","Hiya"],answer:0},
+      {q:"What value reflects feelings of modesty that guide behavior?",options:["Malasakit","Hiya","Paggalang","Pakikipagkapwa‑tao"],answer:1},
+      {q:"Showing genuine concern for community welfare best describes ____.",options:["Pakikipagkapwa‑tao","Malasakit","Hiya","Paggalang"],answer:1},
+      {q:"Treating everyone as a fellow human regardless of status is ____.",options:["Pakikipagkapwa‑tao","Bayanihan","Utang na Loob","Paggalang"],answer:0},
+      {q:"Joining neighbors to clean streets on weekends is an act of ____.",options:["Bayanihan","Hiya","Utang na Loob","Paggalang"],answer:0},
+      {q:"Saying 'po' and 'opo' demonstrates ____.",options:["Hiya","Paggalang","Pakikisama","Malasakit"],answer:1},
+      {q:"Feeling obliged to help a friend after their help shows ____.",options:["Utang na Loob","Hiya","Malasakit","Pakikipagkapwa‑tao"],answer:0},
+      {q:"Lowering your karaoke volume at night shows ____.",options:["Hiya","Bayanihan","Paggalang","Pakikipagkapwa‑tao"],answer:0},
+    ],
+    digital:[
+      {q:"You accidentally receive another student's private data. Ethical action?",options:["Post publicly","Delete & inform","Forward to friends","Ignore"],answer:1},
+      {q:"Sharing deepfake videos without disclosure violates ____ principle.",options:["Transparency","Hiya","Paggalang","Bayanihan"],answer:0},
+      {q:"Installing unlicensed software at work breaches ____ law.",options:["Intellectual property","Transparency","Bayanihan","Hiya"],answer:0},
+      {q:"Posting unverified rumours online is ____.",options:["Misinformation","Malasakit","Bayanihan","Integrity"],answer:0},
+      {q:"Using weak passwords threatens ____.",options:["Security","Bayanihan","Paggalang","Hiya"],answer:0},
+      {q:"Tagging a friend in an embarrassing photo without permission violates ____.",options:["Consent","Bayanihan","Paggalang","Integrity"],answer:0},
+      {q:"Over‑sharing exact location ignores the principle of ____.",options:["Privacy","Bayanihan","Hiya","Pakikipagkapwa"],answer:0},
+      {q:"Using AI art without credit violates ____.",options:["Attribution","Paggalang","Hiya","Security"],answer:0},
+      {q:"Downloading pirated movies is ____.",options:["Copyright infringement","Bayanihan","Hiya","Integrity"],answer:0},
+      {q:"Spamming group chats with ads without consent breaks ____.",options:["Netiquette","Bayanihan","Hiya","Malasakit"],answer:0},
+    ],
+    professional:[
+      {q:"Accepting an expensive gift from a supplier can lead to ____.",options:["Conflict of interest","Bayanihan","Transparency","Hiya"],answer:0},
+      {q:"Falsifying your time sheet undermines ____.",options:["Integrity","Bayanihan","Hiya","Paggalang"],answer:0},
+      {q:"Sharing client's private data is a breach of ____.",options:["Confidentiality","Bayanihan","Hiya","Security"],answer:0},
+      {q:"Taking credit for a coworker's code is ____.",options:["Plagiarism","Paggalang","Privacy","Hiya"],answer:0},
+      {q:"Deleting logs to hide a mistake violates ____.",options:["Accountability","Bayanihan","Hiya","Consent"],answer:0},
+      {q:"Using insider knowledge to trade stocks is ____.",options:["Insider trading","Bayanihan","Integrity","Paggalang"],answer:0},
+      {q:"Using company printer for personal flyers without permission is ____.",options:["Misuse of resources","Bayanihan","Hiya","Consent"],answer:0},
+      {q:"Ignoring safety standards to speed a project is ____.",options:["Professional negligence","Bayanihan","Hiya","Integrity"],answer:0},
+      {q:"Not reporting workplace harassment fails ____.",options:["Duty of care","Bayanihan","Hiya","Transparency"],answer:0},
+      {q:"Exaggerating credentials to win a contract is ____.",options:["Misrepresentation","Bayanihan","Hiya","Utang na Loob"],answer:0},
+    ]
+  };
+
+  /* ---------- State ---------- */
+  let currentIndex = 0;
+  let score = 0;
+  let currentQuiz = [];
+  let currentCategory = '';
+
+  /* ---------- DOM ---------- */
+  const tipBox = document.getElementById('dailyTip');
+  const featureSection = document.getElementById('featureSection');
+  const principlesSection = document.getElementById('principlesSection');
+  const quizSection = document.getElementById('quizSection');
+  const quizCategory = document.getElementById('quizCategory');
+  const quizInner = document.getElementById('quizInner');
+
+  /* ---------- Helpers ---------- */
+  function getTip(){
+    tipBox.textContent = tips[Math.floor(Math.random()*tips.length)];
+  }
+  function showPrinciples(){
+    featureSection.classList.add('hidden');
+    principlesSection.classList.remove('hidden');
+  }
+  function goHome(){
+    featureSection.classList.remove('hidden');
+    principlesSection.classList.add('hidden');
+    quizSection.classList.remove('active');
+    quizCategory.classList.add('hidden');
+    quizInner.innerHTML='';
+  }
+  function selectQuizCategory(){
+    featureSection.classList.add('hidden');
+    quizCategory.classList.remove('hidden');
+  }
+  function startQuiz(cat){
+    currentCategory = cat;
+    currentQuiz = quizzes[cat];
+    currentIndex = 0; score = 0;
+    quizCategory.classList.add('hidden');
+    quizSection.classList.add('active');
+    renderQuestion();
+  }
+  function renderQuestion(){
+    const data = currentQuiz[currentIndex];
+    quizInner.innerHTML = `
+      <p class='result'>You scored ${score} / ${currentQuiz.length} (${percent}%)</p>
+      <div class='tip-banner'>${advo}</div>
+      <button onclick='selectQuizCategory()'>Choose Another Quiz</button>
+      <button onclick='goHome()'>Back to Home</button>
+    `;
+  }
+  function submitAnswer(){
+    const chosen = document.querySelector("input[name='opt']:checked");
+    if(!chosen){alert('Please select an option');return;}
+    if(parseInt(chosen.value)===currentQuiz[currentIndex].answer){score++;}
+    currentIndex++;
+    if(currentIndex<currentQuiz.length){renderQuestion();}else{showResult();}
+  }
+  function showResult() {
+  const percent = Math.round((score / currentQuiz.length) * 100);
+  const advo = advocacyTips[currentCategory][Math.floor(Math.random() * advocacyTips[currentCategory].length)];
+  quizInner.innerHTML = `
+    <p class='result'>You scored ${score} / ${currentQuiz.length} (${percent}%)</p>
+    <div class='tip-banner'>${advo}</div>
+    <button onclick='selectQuizCategory()'>Choose Another Quiz</button>
+    <button onclick='goHome()'>Back to Home</button>
+  `;
+}
