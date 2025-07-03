@@ -63,8 +63,8 @@
     header,footer{background:#2c786c;color:#fff;text-align:center;padding:1rem;flex-shrink:0;}
     main{flex:1;padding:2rem 1rem;width:100%;max-width:900px;margin:0 auto;}
     .intro{text-align:center;margin-bottom:2rem;}
-    .features{display:grid;gap:1.5rem;}
-    @media(min-width:640px){.features{grid-template-columns:repeat(3,1fr);}}
+    .features{display:grid;gap:1.5rem;justify-items:center;}
+    @media(min-width:640px){.features{grid-template-columns:repeat(2,1fr);max-width:600px;margin:0 auto;}}
 
     .card{background:#fff;border-radius:14px;padding:1.5rem 1rem;box-shadow:0 4px 10px rgba(0,0,0,.1);display:flex;flex-direction:column;align-items:center;text-align:center;}
     .card h4{color:#e67e22;margin-bottom:.5rem;}
@@ -275,11 +275,6 @@
         <p>Share your thoughts and help us improve the app.</p>
         <button onclick="showFeedback()">Give Feedback</button>
       </div>
-      <div class="card">
-        <h4>📝 Feedback & Suggestions</h4>
-        <p>Share your thoughts and help us improve the app.</p>
-        <button onclick="showFeedback()">Give Feedback</button>
-      </div>
     </section>
 
     <!-- Principles Section -->
@@ -320,70 +315,8 @@
       <p style="text-align: center; margin-bottom: 2rem; color: #666;">
         Help us improve by sharing your thoughts, suggestions, or reporting issues.
       </p>
-      
-      <form id="feedbackForm">
-        <div class="form-group">
-          <label for="name">Name (Optional):</label>
-          <input type="text" id="name" name="name" placeholder="Your name">
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email (Optional):</label>
-          <input type="email" id="email" name="email" placeholder="your.email@example.com">
-        </div>
-
-        <div class="form-group">
-          <label for="feedbackType">Feedback Type:</label>
-          <select id="feedbackType" name="feedbackType" required>
-            <option value="">Select feedback type</option>
-            <option value="suggestion">💡 Suggestion</option>
-            <option value="bug">🐛 Bug Report</option>
-            <option value="compliment">👍 Compliment</option>
-            <option value="complaint">😞 Complaint</option>
-            <option value="general">📝 General Feedback</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="rating">App Rating:</label>
-          <div class="rating-stars">
-            <span class="star" data-rating="1">⭐</span>
-            <span class="star" data-rating="2">⭐</span>
-            <span class="star" data-rating="3">⭐</span>
-            <span class="star" data-rating="4">⭐</span>
-            <span class="star" data-rating="5">⭐</span>
-          </div>
-          <input type="hidden" id="rating" name="rating" value="0">
-        </div>
-
-        <div class="form-group">
-          <label for="message">Your Message:</label>
-          <textarea id="message" name="message" placeholder="Please share your detailed feedback, suggestions, or report any issues you've encountered..." required></textarea>
-        </div>
-
-        <button type="submit" style="width: 100%; margin-top: 1rem;">
-          📤 Submit Feedback
-        </button>
-      </form>
-
-      <div class="success-message" id="successMessage">
-        ✅ Thank you for your feedback! It has been saved successfully.
-      </div>
-
-      <div class="error-message" id="errorMessage">
-        ❌ There was an error saving your feedback. Please try again.
-      </div>
-
-      <button onclick="goHome()" style="background: #ff914d; margin-top: 1rem;">
-        ← Back to Home
-      </button>
-    </section>
-
-    <!-- Feedback Section -->
-    <section class="feedback-form hidden" id="feedbackSection">
-      <h3>📝 Share Your Feedback</h3>
-      <p style="text-align: center; margin-bottom: 2rem; color: #666;">
-        Help us improve by sharing your thoughts, suggestions, or reporting issues.
+      <p style="text-align: center; margin-bottom: 1rem; color: #888; font-size: 0.9rem;">
+        💡 <strong>Note:</strong> Your feedback will be downloaded as a text file. You can manually collect these files to review all feedback.
       </p>
       
       <form id="feedbackForm">
@@ -842,7 +775,14 @@
     function saveFeedbackToText(feedback) {
       // Create text content in readable format
       const date = new Date(feedback.timestamp).toLocaleString();
-      const textContent = `${date} | ${feedback.name} | ${feedback.email} | ${feedback.feedbackType} | ${feedback.rating} | ${feedback.message}\n`;
+      const textContent = `=== ETHICAL IT ADVOCACY FEEDBACK ===
+Date: ${date}
+Name: ${feedback.name}
+Email: ${feedback.email}
+Type: ${feedback.feedbackType}
+Rating: ${feedback.rating}/5 stars
+Message: ${feedback.message}
+=====================================\n\n`;
       
       // Create blob and download text file
       const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8;' });
@@ -851,7 +791,7 @@
       if (link.download !== undefined) {
         const url = URL.createObjectURL(blob);
         link.setAttribute('href', url);
-        link.setAttribute('download', `feedback_${new Date().toISOString().split('T')[0]}.txt`);
+        link.setAttribute('download', `ethics_feedback_${new Date().toISOString().split('T')[0]}.txt`);
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click();
