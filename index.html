@@ -8,230 +8,856 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
+    /* ========== GLOBAL STYLES ========== */
     *,*::before,*::after{box-sizing:border-box;}
     body{
-      margin:0;font-family:'Poppins',sans-serif;
-      background:linear-gradient(135deg,#FFF7D1,#FFDDBF);
-      color:#333;display:flex;flex-direction:column;min-height:100vh;
+      margin:0;
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#e0f2f1,#b2dfdb);
+      color:#333;
+      display:flex;
+      flex-direction:column;
+      min-height:100vh;
+    }
+
+    header,footer{
+      background:linear-gradient(to right,#2c786c,#3d8880);
+      color:#fff;
+      text-align:center;
+      padding:1rem;
+      flex-shrink:0;
+      box-shadow:0 2px 10px rgba(44,120,108,0.2);
+    }
+
+    .card{
+      background:#fff;
+      border-radius:14px;
+      padding:1.5rem 1rem;
+      box-shadow:0 8px 20px rgba(0,0,0,0.1);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      transition:transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 12px 25px rgba(0,0,0,0.15);
+    }
+
+    .quiz-container{
+      display:none;
+      flex-direction:column;
+      gap:1rem;
+      background:#fff;
+      padding:2rem 1.5rem;
+      border-radius:16px;
+      box-shadow:0 10px 30px rgba(44,120,108,0.15);
     }
     h1,h2,h3,h4{margin:0;}
-    button{cursor:pointer;transition:all .3s ease;}
+    button{cursor:pointer;transition:transform .25s ease;}
     button:hover{transform:scale(1.05);}
+
+    /* ========== LAYOUT ========== */
     header,footer{background:#2c786c;color:#fff;text-align:center;padding:1rem;flex-shrink:0;}
     main{flex:1;padding:2rem 1rem;width:100%;max-width:900px;margin:0 auto;}
     .intro{text-align:center;margin-bottom:2rem;}
     .features{display:grid;gap:1.5rem;}
     @media(min-width:640px){.features{grid-template-columns:repeat(3,1fr);}}
+
     .card{background:#fff;border-radius:14px;padding:1.5rem 1rem;box-shadow:0 4px 10px rgba(0,0,0,.1);display:flex;flex-direction:column;align-items:center;text-align:center;}
     .card h4{color:#e67e22;margin-bottom:.5rem;}
-    .card p{flex:1;}
-    .card button{background:#2c786c;color:#fff;border:none;padding:.6rem 1.2rem;border-radius:25px;font-weight:bold;margin-top:.5rem;}
+    .card button{background:#2c786c;color:#fff;border:none;padding:.6rem 1.4rem;border-radius:25px;font-weight:bold;margin-top:.5rem;}
     .card button:hover{background:#205950;}
-    .quiz-container{display:none;flex-direction:column;gap:1rem;background:#fff;padding:2rem 1.5rem;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.15);}
+
+    /* ========== QUIZ ========== */
+    .quiz-container{display:none;flex-direction:column;gap:1rem;background:#fff;padding:2rem 1.5rem;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.15);} 
     .quiz-container.active{display:flex;}
-    .quiz-q{font-weight:600;}
-    .options{display:flex;flex-direction:column;gap:.5rem;}
-    .result{font-size:1.25rem;font-weight:600;text-align:center;margin:1rem 0;}
-    .tip-banner{background:#ff914d;color:#fff;padding:.75rem 1rem;border-radius:12px;margin-top:1rem;}
+    .quiz-q{
+      font-weight:600;
+      font-size:1.2rem;
+      color:#2c786c;
+      background:#f8f9fa;
+      padding:1rem;
+      border-radius:12px;
+      margin-bottom:1.5rem;
+    }
+    .options{
+      display:flex;
+      flex-direction:column;
+      gap:0.8rem;
+      padding:0 1rem;
+    }
+    .options label{
+      cursor:pointer;
+      padding:0.8rem 1rem;
+      border:2px solid #e9ecef;
+      border-radius:8px;
+      transition:all 0.3s ease;
+    }
+    .options label:hover{
+      border-color:#2c786c;
+      background:#f8f9fa;
+    }
+    .options input[type='radio']{
+      margin-right:10px;
+    }
+    button{
+      background:#2c786c;
+      color:#fff;
+      border:none;
+      padding:0.8rem 1.5rem;
+      border-radius:25px;
+      font-weight:600;
+      margin-top:1.5rem;
+      box-shadow:0 4px 6px rgba(44,120,108,0.2);
+    }
+    button:hover{
+      background:#205950;
+      transform:translateY(-2px);
+      box-shadow:0 6px 8px rgba(44,120,108,0.3);
+    }
+    .result{
+      font-size:1.4rem;
+      font-weight:600;
+      text-align:center;
+      margin:1.5rem 0;
+      color:#2c786c;
+      background:#f8f9fa;
+      padding:1.5rem;
+      border-radius:12px;
+    }
+    .tip-banner{
+      background:linear-gradient(135deg,#ff914d,#ff7e47);
+      color:#fff;
+      padding:1.2rem;
+      border-radius:12px;
+      margin:1.5rem 0;
+      text-align:center;
+      box-shadow:0 4px 6px rgba(255,145,77,0.2);
+    }
     .hidden{display:none !important;}
+
+    /* ========== CATEGORY BUTTONS ========== */
     .category-select{display:flex;flex-direction:column;gap:1rem;text-align:center;margin-top:1rem;}
-    .category-select button{padding:.8rem 1.3rem;background:#ff914d;border:none;color:#fff;border-radius:20px;font-weight:bold;}
+    .category-select button{padding:.8rem 1.4rem;background:#ff914d;color:#fff;border:none;border-radius:22px;font-weight:bold;}
     .category-select button:hover{background:#e57023;}
+
+    /* ========== FEEDBACK FORM ========== */
+    .feedback-form {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 10px 30px rgba(44,120,108,0.15);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .feedback-form h3 {
+      color: #2c786c;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #2c786c;
+      box-shadow: 0 0 0 3px rgba(44,120,108,0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .rating-stars {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+
+    .star {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #ccc;
+      transition: color 0.2s ease;
+    }
+
+    .star:hover,
+    .star.active {
+      color: #ffd700;
+    }
+
+    .success-message {
+      background: linear-gradient(135deg, #4caf50, #45a049);
+      color: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .error-message {
+      background: linear-gradient(135deg, #f44336, #d32f2f);
+      color: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 1rem;
+      display: none;
+    }
   </style>
 </head>
 <body>
+  <!-- ===== HEADER ===== -->
   <header>
     <h1>Ethical IT Advocacy</h1>
-    <p>Empowering Filipinos with digital, cultural & professional ethics</p>
+    <p>Empowering Filipinos through Digital, Cultural & Professional Ethics</p>
   </header>
+
+  <!-- ===== MAIN ===== -->
   <main>
+    <!-- Intro -->
     <section class="intro">
       <h2>Welcome to the Ethics App</h2>
-      <p>This app promotes moral decision‑making grounded in Filipino values, digital citizenship, and professional integrity.</p>
+      <p>This app helps you make ethical decisions based on Filipino values, digital citizenship standards, and professional codes.</p>
     </section>
-    <!-- Feature cards -->
+
+    <!-- Feature Cards -->
     <section class="features" id="featureSection">
       <div class="card">
         <h4>⚖️ Ethical Principles</h4>
-        <p>Explore core Filipino values like <strong>Bayanihan</strong> & <strong>Paggalang</strong>.</p>
+        <p>Browse core Filipino values such as <strong>Bayanihan</strong> & <strong>Paggalang</strong>.</p>
         <button onclick="showPrinciples()">View Principles</button>
       </div>
       <div class="card">
         <h4>🎮 Ethical Quizzes</h4>
-        <p>Choose a category to test your ethics know‑how.</p>
+        <p>Choose a quiz category and test your knowledge.</p>
         <button onclick="selectQuizCategory()">Start Quiz</button>
       </div>
       <div class="card">
         <h4>💡 Daily Life Tips</h4>
-        <p>Get bite‑size tips for everyday ethical choices.</p>
+        <p>Click for a quick ethical tip you can apply today.</p>
         <button onclick="getTip()">Show Tip</button>
-        <p id="dailyTip" style="margin-top:.75rem;font-weight:600;"></p>
+        <p id="dailyTip" style="margin-top:.75rem;font-weight:600"></p>
+      </div>
+      <div class="card">
+        <h4>📝 Feedback & Suggestions</h4>
+        <p>Share your thoughts and help us improve the app.</p>
+        <button onclick="showFeedback()">Give Feedback</button>
+      </div>
+      <div class="card">
+        <h4>📝 Feedback & Suggestions</h4>
+        <p>Share your thoughts and help us improve the app.</p>
+        <button onclick="showFeedback()">Give Feedback</button>
       </div>
     </section>
-    <!-- Principles list -->
+
+    <!-- Principles Section -->
     <section class="card hidden" id="principlesSection">
       <h3>Core Filipino Ethical Principles</h3>
-      <ul style="text-align:left;line-height:1.6;">
-        <li><strong>Pakikipagkapwa‑tao</strong> – Treating others with respect and empathy.</li>
-        <li><strong>Bayanihan</strong> – Community spirit of mutual help.</li>
-        <li><strong>Utang na Loob</strong> – Gratitude & reciprocating favors.</li>
-        <li><strong>Paggalang</strong> – Showing courtesy to elders & authority.</li>
-        <li><strong>Malasakit</strong> – Genuine concern for people & environment.</li>
-        <li><strong>Hiya</strong> – Sense of modesty & social propriety.</li>
-        <li><strong>Pakikisama</strong> – Harmonious relationship with others.</li>
+      <ul style="text-align:left;line-height:1.6">
+        <li><strong>Pakikipagkapwa‑tao</strong> – Respect & empathy for everyone.</li>
+        <li><strong>Bayanihan</strong> – Community cooperation and mutual help.</li>
+        <li><strong>Utang na Loob</strong> – Gratitude and reciprocity.</li>
+        <li><strong>Paggalang</strong> – Courtesy to elders and authority.</li>
+        <li><strong>Malasakit</strong> – Genuine concern for others and the environment.</li>
+        <li><strong>Hiya</strong> – Sense of modesty and social propriety.</li>
+        <li><strong>Pakikisama</strong> – Harmony & smooth interpersonal relations.</li>
       </ul>
       <button onclick="goHome()">Back</button>
     </section>
-    <!-- Quiz play area -->
+
+    <!-- Quiz Container -->
     <section class="quiz-container" id="quizSection">
       <div id="quizInner"></div>
     </section>
-    <!-- Category selection -->
+
+    <!-- Category Selection -->
     <section class="card hidden" id="quizCategory">
       <h3>Select Quiz Category</h3>
       <div class="category-select">
         <button onclick="startQuiz('filipino')">🇵🇭 Filipino Values</button>
         <button onclick="startQuiz('digital')">💻 Digital Ethics</button>
         <button onclick="startQuiz('professional')">👔 Professional Ethics</button>
+        <button onclick="startQuiz('environmental')">🌿 Environmental Ethics</button>
+        <button onclick="startQuiz('social')">📱 Social Media Ethics</button>
       </div>
     </section>
+
+    <!-- Feedback Section -->
+    <section class="feedback-form hidden" id="feedbackSection">
+      <h3>📝 Share Your Feedback</h3>
+      <p style="text-align: center; margin-bottom: 2rem; color: #666;">
+        Help us improve by sharing your thoughts, suggestions, or reporting issues.
+      </p>
+      
+      <form id="feedbackForm">
+        <div class="form-group">
+          <label for="name">Name (Optional):</label>
+          <input type="text" id="name" name="name" placeholder="Your name">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email (Optional):</label>
+          <input type="email" id="email" name="email" placeholder="your.email@example.com">
+        </div>
+
+        <div class="form-group">
+          <label for="feedbackType">Feedback Type:</label>
+          <select id="feedbackType" name="feedbackType" required>
+            <option value="">Select feedback type</option>
+            <option value="suggestion">💡 Suggestion</option>
+            <option value="bug">🐛 Bug Report</option>
+            <option value="compliment">👍 Compliment</option>
+            <option value="complaint">😞 Complaint</option>
+            <option value="general">📝 General Feedback</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="rating">App Rating:</label>
+          <div class="rating-stars">
+            <span class="star" data-rating="1">⭐</span>
+            <span class="star" data-rating="2">⭐</span>
+            <span class="star" data-rating="3">⭐</span>
+            <span class="star" data-rating="4">⭐</span>
+            <span class="star" data-rating="5">⭐</span>
+          </div>
+          <input type="hidden" id="rating" name="rating" value="0">
+        </div>
+
+        <div class="form-group">
+          <label for="message">Your Message:</label>
+          <textarea id="message" name="message" placeholder="Please share your detailed feedback, suggestions, or report any issues you've encountered..." required></textarea>
+        </div>
+
+        <button type="submit" style="width: 100%; margin-top: 1rem;">
+          📤 Submit Feedback
+        </button>
+      </form>
+
+      <div class="success-message" id="successMessage">
+        ✅ Thank you for your feedback! It has been saved successfully.
+      </div>
+
+      <div class="error-message" id="errorMessage">
+        ❌ There was an error saving your feedback. Please try again.
+      </div>
+
+      <button onclick="goHome()" style="background: #ff914d; margin-top: 1rem;">
+        ← Back to Home
+      </button>
+    </section>
+
+    <!-- Feedback Section -->
+    <section class="feedback-form hidden" id="feedbackSection">
+      <h3>📝 Share Your Feedback</h3>
+      <p style="text-align: center; margin-bottom: 2rem; color: #666;">
+        Help us improve by sharing your thoughts, suggestions, or reporting issues.
+      </p>
+      
+      <form id="feedbackForm">
+        <div class="form-group">
+          <label for="name">Name (Optional):</label>
+          <input type="text" id="name" name="name" placeholder="Your name">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email (Optional):</label>
+          <input type="email" id="email" name="email" placeholder="your.email@example.com">
+        </div>
+
+        <div class="form-group">
+          <label for="feedbackType">Feedback Type:</label>
+          <select id="feedbackType" name="feedbackType" required>
+            <option value="">Select feedback type</option>
+            <option value="suggestion">💡 Suggestion</option>
+            <option value="bug">🐛 Bug Report</option>
+            <option value="compliment">👍 Compliment</option>
+            <option value="complaint">😞 Complaint</option>
+            <option value="general">📝 General Feedback</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="rating">App Rating:</label>
+          <div class="rating-stars">
+            <span class="star" data-rating="1">⭐</span>
+            <span class="star" data-rating="2">⭐</span>
+            <span class="star" data-rating="3">⭐</span>
+            <span class="star" data-rating="4">⭐</span>
+            <span class="star" data-rating="5">⭐</span>
+          </div>
+          <input type="hidden" id="rating" name="rating" value="0">
+        </div>
+
+        <div class="form-group">
+          <label for="message">Your Message:</label>
+          <textarea id="message" name="message" placeholder="Please share your detailed feedback, suggestions, or report any issues you've encountered..." required></textarea>
+        </div>
+
+        <button type="submit" style="width: 100%; margin-top: 1rem;">
+          📤 Submit Feedback
+        </button>
+      </form>
+
+      <div class="success-message" id="successMessage">
+        ✅ Thank you for your feedback! It has been saved successfully.
+      </div>
+
+      <div class="error-message" id="errorMessage">
+        ❌ There was an error saving your feedback. Please try again.
+      </div>
+
+      <button onclick="goHome()" style="background: #ff914d; margin-top: 1rem;">
+        ← Back to Home
+      </button>
+    </section>
   </main>
+
+  <!-- ===== FOOTER ===== -->
   <footer>
-    <p>&copy; 2025 Ethical IT Advocacy • Made for Filipino digital citizens</p>
+    <p>&copy; 2025 Ethical IT Advocacy • Built for Filipino digital citizens</p>
   </footer>
 
-<script>
-  /* ---------- Data ---------- */
-  const tips = [
-    "Always ask consent before posting someone else's photo online.",
-    "Think before you click – verify facts first!",
-    "Greet elders with 'po' and 'opo' today.",
-    "Volunteer in your barangay clean‑up drive.",
-    "Integrity first: log your work hours honestly.",
-    "Refuse gifts that compromise objectivity.",
-  ];
+  <!-- ===== SCRIPT ===== -->
+  <script>
+    /* ---------- DATA ---------- */
+    const tips = [
+      "Always ask consent before posting someone else's photo online.",
+      "Think before you click — verify facts first!",
+      "Greet elders with 'po' and 'opo' today.",
+      "Volunteer in your barangay clean‑up drive.",
+      "Integrity first: log your work hours honestly.",
+      "Refuse gifts that could compromise objectivity.",
+    ];
 
-  const advocacyTips = {
-    filipino:[
-      "Live out <strong>bayanihan</strong> by helping a neighbor today!",
-      "Practice <strong>pakikipagkapwa‑tao</strong>: smile and listen actively.",
-      "Show <strong>paggalang</strong>: let elders go first in line.",
-    ],
-    digital:[
-      "Be a digital hero: report misinformation you see online.",
-      "Respect consent: ask friends before tagging them in photos.",
-      "Keep your accounts safe: update your passwords this week!",
-    ],
-    professional:[
-      "Lead by example: turn down conflicts of interest.",
-      "Document honestly – transparency builds trust.",
-      "Stand up for coworkers facing harassment: it's everyone's duty.",
-    ]
-  };
+    const advocacyTips = {
+      filipino:[
+        "Live out <strong>bayanihan</strong>: help a neighbor today!",
+        "Practice <strong>pakikipagkapwa‑tao</strong>: smile and listen actively.",
+        "Show <strong>paggalang</strong>: let elders go first in line.",
+      ],
+      digital:[
+        "Be a digital hero: report misinformation when you see it.",
+        "Respect consent: ask friends before tagging them in photos.",
+        "Keep your accounts safe: update your passwords this week!",
+      ],
+      professional:[
+        "Lead by example: turn down conflicts of interest.",
+        "Document honestly — transparency builds trust.",
+        "Stand up for coworkers facing harassment: it's everyone's duty.",
+      ],
+      environmental:[
+        "Practice <strong>digital minimalism</strong>: delete unused apps and files today!",
+        "Use <strong>sleep mode</strong> on your devices to save energy.",
+        "Recycle old electronics properly — find an e-waste collection point.",
+      ],
+      social:[
+        "Be a <strong>digital role model</strong>: share positive content today!",
+        "Practice <strong>mindful posting</strong>: think twice before sharing.",
+        "Support others online with <strong>kind comments</strong> and encouragement.",
+      ],
+    };
 
-  const quizzes = {
-    filipino:[
-      {q:"Which Filipino value emphasizes community cooperation and helping one another?",options:["Hiya","Bayanihan","Utang na Loob","Paggalang"],answer:1},
-      {q:"Respect for elders is most associated with which value?",options:["Paggalang","Pakikisama","Hiya","Malasakit"],answer:0},
-      {q:"Expressing gratitude and reciprocating favors refers to ____.",options:["Utang na Loob","Bayanihan","Pakikipagkapwa‑tao","Hiya"],answer:0},
-      {q:"What value reflects feelings of modesty that guide behavior?",options:["Malasakit","Hiya","Paggalang","Pakikipagkapwa‑tao"],answer:1},
-      {q:"Showing genuine concern for community welfare best describes ____.",options:["Pakikipagkapwa‑tao","Malasakit","Hiya","Paggalang"],answer:1},
-      {q:"Treating everyone as a fellow human regardless of status is ____.",options:["Pakikipagkapwa‑tao","Bayanihan","Utang na Loob","Paggalang"],answer:0},
-      {q:"Joining neighbors to clean streets on weekends is an act of ____.",options:["Bayanihan","Hiya","Utang na Loob","Paggalang"],answer:0},
-      {q:"Saying 'po' and 'opo' demonstrates ____.",options:["Hiya","Paggalang","Pakikisama","Malasakit"],answer:1},
-      {q:"Feeling obliged to help a friend after their help shows ____.",options:["Utang na Loob","Hiya","Malasakit","Pakikipagkapwa‑tao"],answer:0},
-      {q:"Lowering your karaoke volume at night shows ____.",options:["Hiya","Bayanihan","Paggalang","Pakikipagkapwa‑tao"],answer:0},
-    ],
-    digital:[
-      {q:"You accidentally receive another student's private data. Ethical action?",options:["Post publicly","Delete & inform","Forward to friends","Ignore"],answer:1},
-      {q:"Sharing deepfake videos without disclosure violates ____ principle.",options:["Transparency","Hiya","Paggalang","Bayanihan"],answer:0},
-      {q:"Installing unlicensed software at work breaches ____ law.",options:["Intellectual property","Transparency","Bayanihan","Hiya"],answer:0},
-      {q:"Posting unverified rumours online is ____.",options:["Misinformation","Malasakit","Bayanihan","Integrity"],answer:0},
-      {q:"Using weak passwords threatens ____.",options:["Security","Bayanihan","Paggalang","Hiya"],answer:0},
-      {q:"Tagging a friend in an embarrassing photo without permission violates ____.",options:["Consent","Bayanihan","Paggalang","Integrity"],answer:0},
-      {q:"Over‑sharing exact location ignores the principle of ____.",options:["Privacy","Bayanihan","Hiya","Pakikipagkapwa"],answer:0},
-      {q:"Using AI art without credit violates ____.",options:["Attribution","Paggalang","Hiya","Security"],answer:0},
-      {q:"Downloading pirated movies is ____.",options:["Copyright infringement","Bayanihan","Hiya","Integrity"],answer:0},
-      {q:"Spamming group chats with ads without consent breaks ____.",options:["Netiquette","Bayanihan","Hiya","Malasakit"],answer:0},
-    ],
-    professional:[
-      {q:"Accepting an expensive gift from a supplier can lead to ____.",options:["Conflict of interest","Bayanihan","Transparency","Hiya"],answer:0},
-      {q:"Falsifying your time sheet undermines ____.",options:["Integrity","Bayanihan","Hiya","Paggalang"],answer:0},
-      {q:"Sharing client's private data is a breach of ____.",options:["Confidentiality","Bayanihan","Hiya","Security"],answer:0},
-      {q:"Taking credit for a coworker's code is ____.",options:["Plagiarism","Paggalang","Privacy","Hiya"],answer:0},
-      {q:"Deleting logs to hide a mistake violates ____.",options:["Accountability","Bayanihan","Hiya","Consent"],answer:0},
-      {q:"Using insider knowledge to trade stocks is ____.",options:["Insider trading","Bayanihan","Integrity","Paggalang"],answer:0},
-      {q:"Using company printer for personal flyers without permission is ____.",options:["Misuse of resources","Bayanihan","Hiya","Consent"],answer:0},
-      {q:"Ignoring safety standards to speed a project is ____.",options:["Professional negligence","Bayanihan","Hiya","Integrity"],answer:0},
-      {q:"Not reporting workplace harassment fails ____.",options:["Duty of care","Bayanihan","Hiya","Transparency"],answer:0},
-      {q:"Exaggerating credentials to win a contract is ____.",options:["Misrepresentation","Bayanihan","Hiya","Utang na Loob"],answer:0},
-    ]
-  };
+    // 10 questions each category
+    const quizzes = {
+      filipino:[
+        {q:"Which Filipino value emphasizes community cooperation and helping one another?",options:["Hiya","Bayanihan","Utang na Loob","Paggalang"],answer:1},
+        {q:"Respect for elders is most associated with which value?",options:["Paggalang","Pakikisama","Hiya","Malasakit"],answer:0},
+        {q:"Expressing gratitude and reciprocating favors refers to ____.",options:["Utang na Loob","Bayanihan","Pakikipagkapwa‑tao","Hiya"],answer:0},
+        {q:"What value reflects feelings of social propriety/modesty?",options:["Malasakit","Hiya","Paggalang","Pakikipagkapwa‑tao"],answer:1},
+        {q:"Showing genuine concern for community welfare best describes ____.",options:["Pakikipagkapwa‑tao","Malasakit","Hiya","Paggalang"],answer:1},
+        {q:"Treating everyone as a fellow human regardless of status is ____.",options:["Pakikipagkapwa‑tao","Bayanihan","Utang na Loob","Paggalang"],answer:0},
+        {q:"Joining neighbors to clean streets on weekends is an act of ____.",options:["Bayanihan","Hiya","Utang na Loob","Paggalang"],answer:0},
+        {q:"Saying 'po' and 'opo' demonstrates ____.",options:["Hiya","Paggalang","Pakikisama","Malasakit"],answer:1},
+        {q:"Feeling obliged to help a friend after their help shows ____.",options:["Utang na Loob","Hiya","Malasakit","Pakikipagkapwa‑tao"],answer:0},
+        {q:"Lowering your karaoke volume at night out of courtesy is showing ____.",options:["Hiya","Paggalang","Bayanihan","Utang na Loob"],answer:1}
+      ],
+      digital:[
+        {q:"What does 'Think Before You Click' encourage?",options:["Buying online","Reporting fake news","Verifying info","Liking posts"],answer:2},
+        {q:"Using others' photos without permission violates ____.",options:["Netiquette","Plagiarism","Consent","Free speech"],answer:2},
+        {q:"Spreading false info online is called ____.",options:["Hacking","Misinformation","Data breach","Cyberbullying"],answer:1},
+        {q:"Which is a strong password?",options:["123456","password","Mypetname2023","G$7!xqL2"],answer:3},
+        {q:"Which act promotes digital well-being?",options:["Screen overuse","Doxxing","Taking breaks","Oversharing"],answer:2},
+        {q:"Commenting with empathy online shows ____.",options:["Clout chasing","Digital citizenship","Cancel culture","Bias"],answer:1},
+        {q:"When you protect others' privacy online, you uphold ____.",options:["Freedom","Safety","Accountability","Confidentiality"],answer:3},
+        {q:"You saw cyberbullying. What should you do?",options:["Join","Ignore","Report","Laugh"],answer:2},
+        {q:"Which is illegal online?",options:["Respecting opinion","Using VPN","Downloading pirated movies","Reacting to a post"],answer:2},
+        {q:"Which law protects online privacy in the Philippines?",options:["RA 10175","RA 9003","RA 10918","RA 1425"],answer:0}
+      ],
+      professional:[
+        {q:"Being truthful in reports reflects ____.",options:["Loyalty","Honesty","Charisma","Confidence"],answer:1},
+        {q:"Clocking in for an absent coworker is ____.",options:["Loyal","Unethical","Teamwork","Kind"],answer:1},
+        {q:"Avoiding favoritism supports ____.",options:["Efficiency","Productivity","Fairness","Leadership"],answer:2},
+        {q:"Which is a conflict of interest?",options:["Helping coworker","Supervising relative","Giving feedback","Training"],answer:1},
+        {q:"Gossiping at work damages ____.",options:["Productivity","Trust","Morale","All of the above"],answer:3},
+        {q:"Professionalism means showing ____.",options:["Bias","Discipline","Bribery","Sarcasm"],answer:1},
+        {q:"Which promotes workplace harmony?",options:["Listening","Interrupting","Assuming","Ignoring"],answer:0},
+        {q:"Which is unethical in emails?",options:["Clarity","Spamming","Greeting","Summary"],answer:1},
+        {q:"Refusing gifts from clients prevents ____.",options:["Trust","Corruption","Teamwork","Simplicity"],answer:1},
+        {q:"Protecting company data is a form of ____.",options:["Privacy","Security","Integrity","Compliance"],answer:2}
+      ],
+      environmental: [
+    {q:"What is the ethical principle of environmental stewardship?",options:["Exploiting resources","Protecting nature","Ignoring climate change","Wasting energy"],answer:1},
+    {q:"Which practice shows responsible e-waste management?",options:["Burning old devices","Proper recycling","Throwing in regular trash","Storing indefinitely"],answer:1},
+    {q:"What's an example of sustainable computing?",options:["24/7 device usage","Energy efficiency","Maximum brightness","Constant upgrades"],answer:1},
+    {q:"Which action reduces your carbon footprint?",options:["Cloud computing","Printing everything","Multiple monitors","Leaving PCs on"],answer:0},
+    {q:"What's ethical data center practice?",options:["Ignoring heat","Water conservation","Maximum cooling","Waste generation"],answer:1},
+    {q:"Green computing promotes ____.",options:["Resource waste","Sustainability","Obsolescence","Power usage"],answer:1},
+    {q:"Which shows environmental responsibility?",options:["Digital minimalism","Data hoarding","Excess printing","Device addiction"],answer:0},
+    {q:"Ethical hardware disposal includes ____.",options:["Burning","Data wiping","Dumping","Stockpiling"],answer:1},
+    {q:"What's a green IT practice?",options:["Paper waste","Power saving","Always online","Resource waste"],answer:1},
+    {q:"Environmental ethics in IT means ____.",options:["Minimal impact","Maximum power","Resource waste","Ignoring effects"],answer:0},
+    {q:"How can IT support environmental conservation?",options:["Increase energy use","Digital monitoring","Ignore climate data","More paper use"],answer:1},
+    {q:"Which promotes eco-friendly computing?",options:["Sleep mode usage","Always-on policy","Maximum power","Constant printing"],answer:0}
+  ],
+  social: [
+    {q:"What's ethical social media behavior?",options:["Trolling others","Respectful dialogue","Spreading rumors","Ignoring privacy"],answer:1},
+    {q:"Responsible sharing means ____.",options:["Quick reposting","Fact checking","Viral spreading","Ignoring source"],answer:1},
+    {q:"What shows digital empathy?",options:["Mocking posts","Kind comments","Hate speech","Cyberbullying"],answer:1},
+    {q:"Online activism should be ____.",options:["Aggressive","Constructive","Harmful","Divisive"],answer:1},
+    {q:"What's ethical influencing?",options:["Fake engagement","Transparency","Deception","Manipulation"],answer:1},
+    {q:"Digital footprint requires ____.",options:["Carelessness","Mindfulness","Recklessness","Impulsiveness"],answer:1},
+    {q:"Social media ethics includes ____.",options:["Privacy respect","Data selling","Harassment","Spam posting"],answer:0},
+    {q:"What's proper content sharing?",options:["Stealing work","Crediting source","Copying posts","Hiding origin"],answer:1},
+    {q:"Online discourse should be ____.",options:["Toxic","Respectful","Inflammatory","Hostile"],answer:1},
+    {q:"Digital citizenship means ____.",options:["Responsibility","Anonymity","Harassment","Trolling"],answer:0},
+    {q:"How should you handle online disagreements?",options:["Attack personally","Discuss respectfully","Ignore facts","Spread rumors"],answer:1},
+    {q:"What's ethical content creation?",options:["Copying others","Original work","Stealing ideas","Fake stories"],answer:1}
+  ]
+};
 
-  /* ---------- State ---------- */
-  let currentIndex = 0;
-  let score = 0;
-  let currentQuiz = [];
-  let currentCategory = '';
+    let currentCategory = "";
+    let currentQuiz = [];
+    let currentIndex = 0;
+    let score = 0;
 
-  /* ---------- DOM ---------- */
-  const tipBox = document.getElementById('dailyTip');
-  const featureSection = document.getElementById('featureSection');
-  const principlesSection = document.getElementById('principlesSection');
-  const quizSection = document.getElementById('quizSection');
-  const quizCategory = document.getElementById('quizCategory');
-  const quizInner = document.getElementById('quizInner');
+    const quizInner = document.getElementById("quizInner");
+    const quizSection = document.getElementById("quizSection");
+    const quizCategory = document.getElementById("quizCategory");
+    const featureSection = document.getElementById("featureSection");
+    const principlesSection = document.getElementById("principlesSection");
+    const feedbackSection = document.getElementById("feedbackSection");
+    const dailyTip = document.getElementById("dailyTip");
 
-  /* ---------- Helpers ---------- */
-  function getTip(){
-    tipBox.textContent = tips[Math.floor(Math.random()*tips.length)];
-  }
-  function showPrinciples(){
-    featureSection.classList.add('hidden');
-    principlesSection.classList.remove('hidden');
-  }
-  function goHome(){
-    featureSection.classList.remove('hidden');
-    principlesSection.classList.add('hidden');
-    quizSection.classList.remove('active');
-    quizCategory.classList.add('hidden');
-    quizInner.innerHTML='';
-  }
-  function selectQuizCategory(){
-    featureSection.classList.add('hidden');
-    quizCategory.classList.remove('hidden');
-  }
-  function startQuiz(cat){
-    currentCategory = cat;
-    currentQuiz = quizzes[cat];
-    currentIndex = 0; score = 0;
-    quizCategory.classList.add('hidden');
-    quizSection.classList.add('active');
-    renderQuestion();
-  }
-  function renderQuestion(){
-    const data = currentQuiz[currentIndex];
-    quizInner.innerHTML = `
-      <p class='result'>You scored ${score} / ${currentQuiz.length} (${percent}%)</p>
-      <div class='tip-banner'>${advo}</div>
-      <button onclick='selectQuizCategory()'>Choose Another Quiz</button>
-      <button onclick='goHome()'>Back to Home</button>
-    `;
-  }
-  function submitAnswer(){
-    const chosen = document.querySelector("input[name='opt']:checked");
-    if(!chosen){alert('Please select an option');return;}
-    if(parseInt(chosen.value)===currentQuiz[currentIndex].answer){score++;}
-    currentIndex++;
-    if(currentIndex<currentQuiz.length){renderQuestion();}else{showResult();}
-  }
-  function showResult() {
-  const percent = Math.round((score / currentQuiz.length) * 100);
-  const advo = advocacyTips[currentCategory][Math.floor(Math.random() * advocacyTips[currentCategory].length)];
-  quizInner.innerHTML = `
-    <p class='result'>You scored ${score} / ${currentQuiz.length} (${percent}%)</p>
-    <div class='tip-banner'>${advo}</div>
-    <button onclick='selectQuizCategory()'>Choose Another Quiz</button>
-    <button onclick='goHome()'>Back to Home</button>
-  `;
-}
+    // Feedback form elements
+    const feedbackForm = document.getElementById("feedbackForm");
+    const successMessage = document.getElementById("successMessage");
+    const errorMessage = document.getElementById("errorMessage");
+    const ratingInput = document.getElementById("rating");
+
+    function getTip(){
+      dailyTip.textContent = tips[Math.floor(Math.random()*tips.length)];
+    }
+
+    function showPrinciples(){
+      featureSection.classList.add("hidden");
+      principlesSection.classList.remove("hidden");
+    }
+
+    function showFeedback(){
+      featureSection.classList.add("hidden");
+      feedbackSection.classList.remove("hidden");
+      resetFeedbackForm();
+    }
+
+    function resetFeedbackForm(){
+      feedbackForm.reset();
+      ratingInput.value = "0";
+      document.querySelectorAll('.star').forEach(star => star.classList.remove('active'));
+      successMessage.style.display = 'none';
+      errorMessage.style.display = 'none';
+    }
+
+    function goHome(){
+      featureSection.classList.remove("hidden");
+      quizCategory.classList.add("hidden");
+      quizSection.classList.remove("active");
+      principlesSection.classList.add("hidden");
+      feedbackSection.classList.add("hidden");
+      quizInner.innerHTML = "";
+    }
+
+    // Star rating functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const stars = document.querySelectorAll('.star');
+      
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          const rating = this.getAttribute('data-rating');
+          ratingInput.value = rating;
+          
+          // Update star display
+          stars.forEach((s, index) => {
+            if (index < rating) {
+              s.classList.add('active');
+            } else {
+              s.classList.remove('active');
+            }
+          });
+        });
+
+        star.addEventListener('mouseenter', function() {
+          const rating = this.getAttribute('data-rating');
+          stars.forEach((s, index) => {
+            if (index < rating) {
+              s.style.color = '#ffd700';
+            }
+          });
+        });
+
+        star.addEventListener('mouseleave', function() {
+          const currentRating = ratingInput.value;
+          stars.forEach((s, index) => {
+            if (index < currentRating) {
+              s.style.color = '#ffd700';
+            } else {
+              s.style.color = '#ccc';
+            }
+          });
+        });
+      });
+    });
+
+    // Feedback form submission
+    feedbackForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(feedbackForm);
+      const feedback = {
+        timestamp: new Date().toISOString(),
+        name: formData.get('name') || 'Anonymous',
+        email: formData.get('email') || 'No email provided',
+        feedbackType: formData.get('feedbackType'),
+        rating: formData.get('rating'),
+        message: formData.get('message')
+      };
+
+      // Save feedback to CSV
+      saveFeedbackToCSV(feedback);
+      
+      // Show success message
+      successMessage.style.display = 'block';
+      errorMessage.style.display = 'none';
+      
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        resetFeedbackForm();
+      }, 3000);
+    });
+
+
+
+    function selectQuizCategory(){
+      featureSection.classList.add("hidden");
+      quizCategory.classList.remove("hidden");
+    }
+
+    function startQuiz(cat){
+      currentCategory = cat;
+      currentQuiz = quizzes[cat];
+      currentIndex = 0;
+      score = 0;
+      quizCategory.classList.add("hidden");
+      quizSection.classList.add("active");
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const data = currentQuiz[currentIndex];
+      quizInner.innerHTML = `
+        <h3 style="color:#666;margin-bottom:1.5rem;">Question ${currentIndex+1} of ${currentQuiz.length}</h3>
+        <p class='quiz-q'>${data.q}</p>
+        <div class='options'>
+          ${data.options.map((opt,i)=>`
+            <label>
+              <input type='radio' name='opt' value='${i}'>
+              ${opt}
+            </label>
+          `).join('')}
+        </div>
+        <button onclick='submitAnswer()' style='display:block;width:100%;max-width:200px;margin:1.5rem auto 0;'>
+          ${currentIndex === currentQuiz.length-1 ? '🎯 Finish Quiz' : '👉 Next Question'}
+        </button>
+      `;
+    }
+
+    function submitAnswer(){
+      const selected = document.querySelector("input[name='opt']:checked");
+      if(!selected) return alert("Please select an answer.");
+      const ans = parseInt(selected.value);
+      if(ans === currentQuiz[currentIndex].answer) score++;
+      currentIndex++;
+      if(currentIndex < currentQuiz.length){
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult(){
+      const percent = Math.round((score/currentQuiz.length)*100);
+      const advocacy = advocacyTips[currentCategory];
+      const randomTip = advocacy[Math.floor(Math.random()*advocacy.length)];
+      quizInner.innerHTML = `
+        <div class='result'>
+          <div style='font-size:2.5rem;margin-bottom:0.5rem'>🏆</div>
+          <div>You got ${score} out of ${currentQuiz.length} correct!</div>
+          <div style='font-size:1.2rem;color:#666;margin-top:0.5rem'>(${percent}%)</div>
+        </div>
+        <div class='tip-banner'>${randomTip}</div>
+        <div style='display:flex;gap:1rem;justify-content:center'>
+          <button onclick='selectQuizCategory()'>Try Another Quiz</button>
+          <button onclick='goHome()' style='background:#ff914d'>Back to Home</button>
+        </div>
+      `;
+    }
+
+    // Star rating functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const stars = document.querySelectorAll('.star');
+      
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          const rating = this.getAttribute('data-rating');
+          ratingInput.value = rating;
+          
+          // Update star display
+          stars.forEach((s, index) => {
+            if (index < rating) {
+              s.classList.add('active');
+            } else {
+              s.classList.remove('active');
+            }
+          });
+        });
+
+        star.addEventListener('mouseenter', function() {
+          const rating = this.getAttribute('data-rating');
+          stars.forEach((s, index) => {
+            if (index < rating) {
+              s.style.color = '#ffd700';
+            }
+          });
+        });
+
+        star.addEventListener('mouseleave', function() {
+          const currentRating = ratingInput.value;
+          stars.forEach((s, index) => {
+            if (index < currentRating) {
+              s.style.color = '#ffd700';
+            } else {
+              s.style.color = '#ccc';
+            }
+          });
+        });
+      });
+    });
+
+    // Feedback form submission
+    feedbackForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(feedbackForm);
+      const feedback = {
+        timestamp: new Date().toISOString(),
+        name: formData.get('name') || 'Anonymous',
+        email: formData.get('email') || 'No email provided',
+        feedbackType: formData.get('feedbackType'),
+        rating: formData.get('rating'),
+        message: formData.get('message')
+      };
+
+      // Save feedback to CSV
+      saveFeedbackToCSV(feedback);
+      
+      // Show success message
+      successMessage.style.display = 'block';
+      errorMessage.style.display = 'none';
+      
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        resetFeedbackForm();
+      }, 3000);
+    });
+
+    function saveFeedbackToCSV(feedback) {
+      // Create CSV content
+      const csvContent = `Timestamp,Name,Email,Feedback Type,Rating,Message\n"${feedback.timestamp}","${feedback.name}","${feedback.email}","${feedback.feedbackType}","${feedback.rating}","${feedback.message.replace(/"/g, '""')}"\n`;
+      
+      // Create blob and download CSV
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `feedback_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      
+      // Also save to localStorage as backup
+      const existingFeedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+      existingFeedbacks.push(feedback);
+      localStorage.setItem('feedbacks', JSON.stringify(existingFeedbacks));
+      
+      // Save to text file format as well
+      saveFeedbackToText(feedback);
+    }
+
+    function saveFeedbackToText(feedback) {
+      // Create text content in readable format
+      const date = new Date(feedback.timestamp).toLocaleString();
+      const textContent = `${date} | ${feedback.name} | ${feedback.email} | ${feedback.feedbackType} | ${feedback.rating} | ${feedback.message}\n`;
+      
+      // Create blob and download text file
+      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8;' });
+      const link = document.createElement('a');
+      
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `feedback_${new Date().toISOString().split('T')[0]}.txt`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  </script>
+</body>
+</html>
